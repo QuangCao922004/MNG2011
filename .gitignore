@@ -33,3 +33,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ADLC Kit & operations (bootstrapped locally, never committed)
+/.ast-grep/
+/kit/
+/workspace/
+/dashboard/
+/INIT.cmd
+/DASHBOARD.cmd
+/run.mjs
+/workspace.mjs
+/live-dashboard.mjs
+/runtime-observer.mjs
+/capsule.json
+/index.html
+
