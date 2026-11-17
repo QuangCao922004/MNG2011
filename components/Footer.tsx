@@ -58,6 +58,14 @@ export default function Footer() {
               <li><a href="#gallery" className="hover:text-rose-400 transition-colors">Bộ Sưu Tập Kỷ Niệm</a></li>
               <li><a href="#letter" className="hover:text-rose-400 transition-colors">Tâm Thư 20/11</a></li>
               <li><a href="#wishes" className="hover:text-rose-400 transition-colors">Sổ Lưu Bút</a></li>
+              <li>
+                <a
+                  href="/team"
+                  className="hover:text-rose-400 transition-colors"
+                >
+                  Đội ngũ phát triển
+                </a>
+              </li>
             </ul>
           </div>
 
