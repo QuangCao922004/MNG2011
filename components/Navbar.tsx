@@ -22,6 +22,7 @@ export default function Navbar() {
     { name: "Hành Trình & Kỷ Niệm", href: "#journey" },
     { name: "Góc Ảnh Rạng Rỡ", href: "#gallery" },
     { name: "Tâm Thư Tri Ân", href: "#letter" },
+    { name: "Bánh Kem 20/11", href: "#cake" },
     { name: "Gửi Lời Chúc", href: "#wishes" },
   ];
 
@@ -33,14 +34,14 @@ export default function Navbar() {
           : "bg-transparent py-5"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <a href="#hero" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 p-0.5 shadow-md group-hover:scale-105 transition-transform">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+        <a href="#hero" className="flex items-center gap-2.5 group shrink-0">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 p-0.5 shadow-md group-hover:scale-105 transition-transform shrink-0">
             <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
               <Flower2 className="w-5 h-5 text-rose-500 group-hover:rotate-12 transition-transform" />
             </div>
           </div>
-          <div>
+          <div className="whitespace-nowrap">
             <span className="font-playfair text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-rose-700 via-rose-600 to-teal-700 bg-clip-text text-transparent block leading-tight">
               Cô Ma Ngân Giang
             </span>
@@ -51,12 +52,12 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden lg:flex items-center gap-4 xl:gap-7">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-stone-700 hover:text-rose-600 text-sm font-medium transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-rose-500 hover:after:w-full after:transition-all"
+              className="text-stone-700 hover:text-rose-600 text-[13px] xl:text-sm font-medium whitespace-nowrap transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-rose-500 hover:after:w-full after:transition-all"
             >
               {link.name}
             </a>
@@ -64,18 +65,18 @@ export default function Navbar() {
         </nav>
 
         {/* Action Button */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
           <button
             onClick={() => triggerFireworks()}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 shadow-md hover:shadow-rose-200 transition-all hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap text-white bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 shadow-md hover:shadow-rose-200 transition-all hover:scale-105 active:scale-95"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 shrink-0" />
             <span>Chúc Mừng Cô 🎉</span>
           </button>
         </div>
 
         {/* Mobile menu trigger */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-2 shrink-0">
           <button
             onClick={() => triggerFireworks()}
             className="p-2 rounded-full text-white bg-rose-500 shadow-sm"
@@ -95,7 +96,7 @@ export default function Navbar() {
 
       {/* Mobile Nav dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-rose-100 px-6 py-4 shadow-xl animate-in slide-in-from-top-4 duration-200">
+        <div className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-rose-100 px-6 py-4 shadow-xl animate-in slide-in-from-top-4 duration-200">
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <a

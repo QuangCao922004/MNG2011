@@ -5,6 +5,7 @@ import AboutSection from "@/components/AboutSection";
 import JourneySection from "@/components/JourneySection";
 import GallerySection from "@/components/GallerySection";
 import LetterSection from "@/components/LetterSection";
+import CakeSection from "@/components/CakeSection";
 import WishesSection from "@/components/WishesSection";
 import Footer from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
@@ -29,6 +30,9 @@ export default function Home() {
 
       {/* Interactive Letter / Card Section */}
       <LetterSection />
+
+      {/* Interactive Virtual 20/11 Cake */}
+      <CakeSection />
 
       {/* Guestbook & Wishes Wall */}
       <WishesSection />
