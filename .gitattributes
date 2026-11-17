@@ -1,0 +1,17 @@
+# Force LF line endings across Linux, macOS, and Windows for consistent diffs
+* text=auto eol=lf
+
+# Keep Windows batch scripts in CRLF just in case
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Denote binary files so Git never alters them
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
