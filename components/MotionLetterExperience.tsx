@@ -16,17 +16,21 @@ export default function MotionLetterExperience({
   onClose,
 }: MotionLetterExperienceProps) {
   // States: 'sealed' | 'unsealing' | 'reading'
-  const [phase, setPhase] = useState<"sealed" | "unsealing" | "reading">(
-    initialOpen ? "reading" : "sealed"
-  );
+  // The special link always lands on the sealed envelope so the recipient gets
+  // the ritual of breaking the wax seal, not a pre-opened letter.
+  const [phase, setPhase] = useState<"sealed" | "unsealing" | "reading">("sealed");
   const [isVisible, setIsVisible] = useState(initialOpen);
 
+  // Let the in-page letter section reopen the sealed envelope instead of
+  // printing a second copy of the letter text.
   useEffect(() => {
-    if (initialOpen) {
+    const openLetter = () => {
       setIsVisible(true);
-      setPhase("reading");
-    }
-  }, [initialOpen]);
+      setPhase("sealed");
+    };
+    window.addEventListener("open-motion-letter", openLetter);
+    return () => window.removeEventListener("open-motion-letter", openLetter);
+  }, []);
 
   const handleOpenEnvelope = () => {
     if (phase !== "sealed") return;
@@ -65,7 +69,7 @@ export default function MotionLetterExperience({
             setIsVisible(true);
             setPhase("sealed");
           }}
-          className="fixed bottom-6 right-6 z-40 group flex items-center gap-3 px-4 py-2.5 rounded-full bg-gradient-to-r from-rose-900/90 via-rose-800/90 to-stone-900/90 text-amber-100 border border-amber-300/40 shadow-2xl backdrop-blur-md transition-all hover:border-amber-400 hover:shadow-rose-950/40"
+          className="fixed bottom-24 right-6 z-40 group flex items-center gap-3 px-4 py-2.5 rounded-full bg-gradient-to-r from-rose-900/90 via-rose-800/90 to-stone-900/90 text-amber-100 border border-amber-300/40 shadow-2xl backdrop-blur-md transition-all hover:border-amber-400 hover:shadow-rose-950/40"
         >
           {/* Wax seal mini icon */}
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-700 via-rose-900 to-amber-900 flex items-center justify-center text-amber-200 border border-amber-400/50 shadow-inner group-hover:rotate-12 transition-transform">
