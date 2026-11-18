@@ -62,7 +62,7 @@ export default function LetterSection() {
 
           <div className="flex items-center justify-center gap-3 mb-2">
             <Flower2 className="w-5 h-5 text-rose-500" />
-            <span className="font-serif text-xs uppercase tracking-widest text-amber-800">
+            <span className="font-playfair text-xs uppercase tracking-widest text-amber-800">
               Thư Tri Ân 20/11
             </span>
             <Flower2 className="w-5 h-5 text-rose-500" />

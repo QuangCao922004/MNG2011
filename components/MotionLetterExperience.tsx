@@ -20,6 +20,10 @@ export default function MotionLetterExperience({
   // the ritual of breaking the wax seal, not a pre-opened letter.
   const [phase, setPhase] = useState<"sealed" | "unsealing" | "reading">("sealed");
   const [isVisible, setIsVisible] = useState(initialOpen);
+  // The floating "reopen" pill only makes sense once the visitor has scrolled
+  // past the invitation, otherwise it sits on top of the hero and the letter
+  // card on every screen.
+  const [showReopen, setShowReopen] = useState(false);
 
   // Let the in-page letter section reopen the sealed envelope instead of
   // printing a second copy of the letter text.
@@ -30,6 +34,22 @@ export default function MotionLetterExperience({
     };
     window.addEventListener("open-motion-letter", openLetter);
     return () => window.removeEventListener("open-motion-letter", openLetter);
+  }, []);
+
+  useEffect(() => {
+    const section = document.getElementById("letter");
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Visible only after the invitation has scrolled up out of view.
+        setShowReopen(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
   }, []);
 
   const handleOpenEnvelope = () => {
@@ -58,8 +78,8 @@ export default function MotionLetterExperience({
 
   return (
     <>
-      {/* Floating Re-Open Button on Main Page (Always accessible even if bypassed) */}
-      {!isVisible && (
+      {/* Floating Re-Open Button — appears once the invitation is above the fold */}
+      {!isVisible && showReopen && (
         <motion.button
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -77,7 +97,7 @@ export default function MotionLetterExperience({
           </div>
           <div className="text-left">
             <p className="text-[10px] uppercase tracking-wider text-amber-300 font-medium">Bức Thư Tri Ân</p>
-            <p className="text-xs font-serif font-bold text-white">Gửi riêng Cô Ngân Giang</p>
+            <p className="text-xs font-playfair font-bold text-white">Gửi riêng Cô Ngân Giang</p>
           </div>
         </motion.button>
       )}
@@ -172,6 +192,10 @@ export default function MotionLetterExperience({
                   />
 
                   {/* Red & Gold Wax Seal (Center) */}
+                  {/* Positioning lives on this static wrapper: framer-motion writes its own
+                      inline transform for the scale animation, which would otherwise
+                      overwrite Tailwind's -translate-x-1/2 and push the seal off-center. */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center justify-center">
                   <motion.div
                     animate={{
                       scale: phase === "unsealing" ? [1, 1.25, 0] : [1, 1.04, 1],
@@ -182,7 +206,7 @@ export default function MotionLetterExperience({
                         ? { duration: 0.45, times: [0, 0.5, 1] } 
                         : { repeat: Infinity, duration: 3, ease: "easeInOut" },
                     }}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center justify-center"
+                    className="flex flex-col items-center justify-center"
                   >
                     {/* Wax Stamp Body */}
                     <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-rose-900 via-rose-700 to-amber-700 p-1 shadow-[0_8px_25px_rgba(225,29,72,0.4)] border-2 border-amber-300/70 flex items-center justify-center">
@@ -202,6 +226,7 @@ export default function MotionLetterExperience({
                       </span>
                     </div>
                   </motion.div>
+                  </div>
                 </motion.div>
 
                 {/* Direct Bypass Link */}
@@ -246,7 +271,10 @@ export default function MotionLetterExperience({
                 </div>
 
                 {/* Letter Body */}
-                <div className="space-y-6 text-stone-700 font-serif leading-relaxed text-base sm:text-lg">
+                {/* font-playfair, not font-serif: Tailwind's `font-serif` is Georgia on
+                    Windows, which lacks 46 of the Vietnamese letters used in this letter
+                    (ề, ắ, ầ, ộ…) and renders them as base letter + detached accent mark. */}
+                <div className="space-y-6 text-stone-700 font-playfair leading-relaxed text-base sm:text-lg">
                   <p className="font-dancing text-3xl sm:text-4xl text-rose-800 font-bold">
                     Cô Ma Ngân Giang kính mến,
                   </p>
