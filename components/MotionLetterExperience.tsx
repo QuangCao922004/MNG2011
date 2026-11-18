@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Sparkles, Heart, ArrowRight, X, Mail } from "lucide-react";
 import { triggerFireworks, triggerHeartBurst } from "@/lib/confetti";
 import { sfx } from "@/lib/audio";
@@ -15,15 +15,17 @@ export default function MotionLetterExperience({
   initialOpen = false,
   onClose,
 }: MotionLetterExperienceProps) {
-  // States: 'sealed' | 'unsealing' | 'reading'
+  // States: 'sealed' | 'breaking' | 'opening' | 'reading'
   // The special link always lands on the sealed envelope so the recipient gets
   // the ritual of breaking the wax seal, not a pre-opened letter.
-  const [phase, setPhase] = useState<"sealed" | "unsealing" | "reading">("sealed");
+  const [phase, setPhase] = useState<"sealed" | "breaking" | "opening" | "reading">("sealed");
   const [isVisible, setIsVisible] = useState(initialOpen);
   // The floating "reopen" pill only makes sense once the visitor has scrolled
   // past the invitation, otherwise it sits on top of the hero and the letter
   // card on every screen.
   const [showReopen, setShowReopen] = useState(false);
+  // Honour prefers-reduced-motion: the seal still breaks, but nothing is flung.
+  const reduceMotion = useReducedMotion();
 
   // Let the in-page letter section reopen the sealed envelope instead of
   // printing a second copy of the letter text.
@@ -55,20 +57,26 @@ export default function MotionLetterExperience({
   const handleOpenEnvelope = () => {
     if (phase !== "sealed") return;
 
-    // 1. Play tactile wax pop sound & confetti
+    // Real envelope sequence, timed as one continuous motion:
+    //   wax cracks (0-420ms) -> flap swings open + paper rises (420-1400ms)
+    //   -> letter takes over (1400ms)
+    // The old version opened the flap first, left the inner paper frozen and
+    // then hard-swapped to the letter, leaving ~700ms with nothing moving.
     sfx.playSealBreak();
     triggerHeartBurst();
-    setPhase("unsealing");
+    setPhase("breaking");
 
-    // 2. Play paper rustle after flap opens
+    // Paper only rustles once the flap is actually out of the way.
     setTimeout(() => {
       sfx.playPaperRustle();
-    }, 450);
+      setPhase("opening");
+    }, 380);
 
-    // 3. Slide letter out & expand
+    // Hand over while the sheet is still settling, so there is no still frame
+    // between the envelope and the letter.
     setTimeout(() => {
       setPhase("reading");
-    }, 900);
+    }, 1120);
   };
 
   const handleDismiss = () => {
@@ -157,32 +165,69 @@ export default function MotionLetterExperience({
                   className="relative w-full max-w-[420px] aspect-[1.45/1] [perspective:1200px] cursor-pointer group"
                   onClick={handleOpenEnvelope}
                 >
-                  {/* Envelope Body (Back pocket) */}
+                  {/* ---- ENVELOPE BACK POCKET (z-0) ---- */}
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-rose-950 via-[#3a0a14] to-stone-900 border border-amber-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden">
-                    {/* Metallic Gold Lining Pattern */}
                     <div className="absolute inset-2 border border-dashed border-amber-400/20 rounded-xl" />
-                    
-                    {/* Inside folded letter edge showing */}
-                    <div className="absolute bottom-4 left-6 right-6 h-32 bg-[#fffdf9] rounded-lg shadow-md border border-amber-100" />
                   </div>
 
-                  {/* Envelope Front Bottom Fold */}
-                  <div 
+                  {/* ---- THE LETTER ITSELF, FOLDED INSIDE (z-5) ----
+                      This is the piece the old build never moved: it sat at a
+                      constant 129.5px offset for the whole animation, so the
+                      flap opened onto nothing. It now rises out of the pocket. */}
+                  <motion.div
+                    className="absolute left-5 right-5 top-7 bottom-7 rounded-md bg-[#fffdf9] border border-amber-100 shadow-[0_-2px_10px_rgba(0,0,0,0.25)] z-[5] overflow-hidden"
+                    initial={false}
+                    animate={
+                      phase === "sealed"
+                        ? { y: "18%", rotate: 0 }
+                        : phase === "breaking"
+                        ? { y: "18%", rotate: 0 }
+                        : { y: "-58%", rotate: -2.2 }
+                    }
+                    transition={{
+                      // The sheet waits for the flap to actually clear it —
+                      // paper cannot slide out through a closed flap.
+                      y: { type: "spring", stiffness: 92, damping: 17, mass: 0.9, delay: phase === "opening" ? 0.3 : 0 },
+                      rotate: { type: "spring", stiffness: 92, damping: 17, mass: 0.9, delay: phase === "opening" ? 0.3 : 0 },
+                    }}
+                  >
+                    {/* Folded crease lines so the sheet reads as paper, not a div */}
+                    <div className="absolute inset-x-0 top-1/3 h-px bg-amber-900/10" />
+                    <div className="absolute inset-x-0 top-2/3 h-px bg-amber-900/10" />
+                    <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-b from-stone-300/40 to-transparent" />
+                  </motion.div>
+
+                  {/* ---- ENVELOPE FRONT POCKET (z-10) ----
+                      The V-shaped fold that hides the lower half of the letter,
+                      so the sheet appears to slide out of a real pocket. */}
+                  <div
                     className="absolute inset-0 pointer-events-none rounded-2xl z-10"
                     style={{
-                      background: "linear-gradient(135deg, transparent 48%, rgba(58,10,20,0.95) 50%, #25060d 100%)",
+                      background:
+                        "linear-gradient(160deg, #6b1220 0%, #4a0d1a 45%, #25060d 100%)",
+                      clipPath: "polygon(0 100%, 0 46%, 50% 88%, 100% 46%, 100% 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(251,191,36,0.18)",
                     }}
                   />
 
-                  {/* Envelope 3D Top Flap */}
+                  {/* ---- ENVELOPE TOP FLAP (z-20) ----
+                      Opens upward with weight: a small release, a fast swing,
+                      then a settle instead of a single linear sweep. */}
                   <motion.div
                     className="absolute top-0 left-0 right-0 h-1/2 origin-top z-20 rounded-t-2xl [transform-style:preserve-3d]"
+                    initial={false}
                     animate={{
-                      rotateX: phase === "unsealing" ? -175 : 0,
+                      rotateX:
+                        phase === "sealed" || phase === "breaking"
+                          ? 0
+                          : reduceMotion
+                          ? -178
+                          : [0, -12, -96, -170, -178],
                     }}
                     transition={{
-                      duration: 0.75,
-                      ease: [0.4, 0, 0.2, 1],
+                      duration: phase === "opening" ? 0.84 : 0,
+                      times: [0, 0.14, 0.46, 0.82, 1],
+                      ease: [0.34, 0, 0.2, 1],
                     }}
                     style={{
                       background: "linear-gradient(to bottom, #4a0d1a, #340711)",
@@ -191,41 +236,72 @@ export default function MotionLetterExperience({
                     }}
                   />
 
-                  {/* Red & Gold Wax Seal (Center) */}
-                  {/* Positioning lives on this static wrapper: framer-motion writes its own
-                      inline transform for the scale animation, which would otherwise
-                      overwrite Tailwind's -translate-x-1/2 and push the seal off-center. */}
+                  {/* ---- WAX SEAL (z-30) ----
+                      It now cracks: a shake under load, then the stamp drops
+                      away with fragments, instead of gently fading out. */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center justify-center">
-                  <motion.div
-                    animate={{
-                      scale: phase === "unsealing" ? [1, 1.25, 0] : [1, 1.04, 1],
-                      opacity: phase === "unsealing" ? 0 : 1,
-                    }}
-                    transition={{
-                      scale: phase === "unsealing" 
-                        ? { duration: 0.45, times: [0, 0.5, 1] } 
-                        : { repeat: Infinity, duration: 3, ease: "easeInOut" },
-                    }}
-                    className="flex flex-col items-center justify-center"
-                  >
-                    {/* Wax Stamp Body */}
-                    <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-rose-900 via-rose-700 to-amber-700 p-1 shadow-[0_8px_25px_rgba(225,29,72,0.4)] border-2 border-amber-300/70 flex items-center justify-center">
-                      <div className="w-16 h-16 rounded-full border border-dashed border-amber-200/80 flex flex-col items-center justify-center text-amber-100 bg-rose-950/80">
-                        <span className="text-[10px] font-mono tracking-widest text-amber-300">20·11</span>
-                        <Heart className="w-4 h-4 fill-amber-300 text-amber-300 mt-0.5" />
-                      </div>
-                      
-                      {/* Wax drip imperfections for tactile look */}
-                      <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-rose-900 rounded-full" />
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-rose-800 rounded-full" />
-                    </div>
+                    <motion.div
+                      initial={false}
+                      animate={
+                        phase === "sealed"
+                          ? { scale: [1, 1.04, 1], rotate: 0, y: 0, opacity: 1 }
+                          : phase === "breaking"
+                          ? { scale: [1, 1.1, 0.72], rotate: [0, -7, 6, -4, 11], y: [0, -1, 1, 8, 30], opacity: [1, 1, 1, 0.9, 0] }
+                          : { scale: 0.6, y: 34, opacity: 0 }
+                      }
+                      transition={
+                        phase === "sealed"
+                          ? { scale: { repeat: Infinity, duration: 3, ease: "easeInOut" } }
+                          : { duration: phase === "breaking" ? 0.46 : 0.2, times: [0, 0.24, 0.5, 0.78, 1] }
+                      }
+                      className="relative flex flex-col items-center justify-center"
+                    >
+                      {/* Wax Stamp Body */}
+                      <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-rose-900 via-rose-700 to-amber-700 p-1 shadow-[0_8px_25px_rgba(225,29,72,0.4)] border-2 border-amber-300/70 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full border border-dashed border-amber-200/80 flex flex-col items-center justify-center text-amber-100 bg-rose-950/80">
+                          <span className="text-[10px] font-mono tracking-widest text-amber-300">20·11</span>
+                          <Heart className="w-4 h-4 fill-amber-300 text-amber-300 mt-0.5" />
+                        </div>
 
-                    <div className="mt-3 px-3 py-1 rounded-full bg-black/60 border border-white/10 backdrop-blur-sm">
-                      <span className="text-[11px] text-amber-200 font-sans tracking-wide">
-                        Chạm để gỡ niêm phong ✨
-                      </span>
-                    </div>
-                  </motion.div>
+                        {/* Wax drip imperfections for tactile look */}
+                        <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-rose-900 rounded-full" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-rose-800 rounded-full" />
+
+                        {/* Crack running through the stamp once it breaks */}
+                        {phase !== "sealed" && (
+                          <div className="absolute inset-0 rounded-full pointer-events-none">
+                            <div className="absolute left-1/2 top-2 bottom-2 w-[2px] -translate-x-1/2 bg-stone-950/70 rotate-12" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Wax fragments flung out on break */}
+                      {phase === "breaking" && !reduceMotion && (
+                        <>
+                          {[
+                            { x: -34, y: 44, r: -50, d: 0.02 },
+                            { x: 30, y: 52, r: 38, d: 0.07 },
+                            { x: 4, y: 62, r: -14, d: 0.12 },
+                          ].map((f, i) => (
+                            <motion.span
+                              key={i}
+                              initial={{ x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 }}
+                              animate={{ x: f.x, y: f.y, rotate: f.r, opacity: 0, scale: 0.5 }}
+                              transition={{ duration: 0.5, delay: f.d, ease: "easeIn" }}
+                              className="absolute top-1/2 left-1/2 w-2.5 h-2.5 rounded-full bg-gradient-to-br from-rose-700 to-amber-800 shadow-sm"
+                            />
+                          ))}
+                        </>
+                      )}
+
+                      {phase === "sealed" && (
+                        <div className="mt-3 px-3 py-1 rounded-full bg-black/60 border border-white/10 backdrop-blur-sm">
+                          <span className="text-[11px] text-amber-200 font-sans tracking-wide">
+                            Chạm để gỡ niêm phong ✨
+                          </span>
+                        </div>
+                      )}
+                    </motion.div>
                   </div>
                 </motion.div>
 
@@ -240,11 +316,13 @@ export default function MotionLetterExperience({
             )}
 
             {/* STAGE 3: Unfolded Tactile Letter Modal */}
-            {phase === "reading" && (
+            <AnimatePresence>
+              {phase === "reading" && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                key="letter"
+                initial={{ opacity: 0, scale: 0.96, y: 26 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                transition={{ type: "spring", damping: 30, stiffness: 180, mass: 0.8 }}
                 className="relative max-w-3xl w-full my-auto bg-[#fffdfa] rounded-3xl p-6 sm:p-10 md:p-14 shadow-2xl border border-amber-200/80 text-stone-800 overflow-hidden"
               >
                 {/* Subtle paper background texture & gold ribbon */}
@@ -336,7 +414,8 @@ export default function MotionLetterExperience({
                   </button>
                 </div>
               </motion.div>
-            )}
+              )}
+            </AnimatePresence>
 
           </motion.div>
         )}
