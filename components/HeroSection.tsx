@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Sparkles, Heart, Award, BookOpen, Send, Calendar, CheckCircle2 } from "lucide-react";
 import { triggerFireworks, triggerHeartBurst } from "@/lib/confetti";
+import { assetPath } from "@/lib/assets";
 
 export default function HeroSection() {
   const [likes, setLikes] = useState(1120);
@@ -129,7 +130,7 @@ export default function HeroSection() {
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white group">
                 <div className="relative aspect-[3/4] w-full overflow-hidden">
                   <Image
-                    src="/images/giangma1.jpg"
+                    src={assetPath("/images/giangma1.jpg")}
                     alt="Cô Ma Ngân Giang - ĐH Sư Phạm TP.HCM"
                     fill
                     className="object-cover object-top transition-transform duration-700 group-hover:scale-105"

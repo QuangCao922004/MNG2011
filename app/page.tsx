@@ -12,33 +12,14 @@ import MusicPlayer from "@/components/MusicPlayer";
 import SmoothScroll from "@/components/SmoothScroll";
 import MotionLetterExperience from "@/components/MotionLetterExperience";
 
-interface PageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function Home({ searchParams }: PageProps) {
-  const params = await searchParams;
-
-  // Special link triggers:
-  // Examples:
-  // http://localhost:3000/?to=giangma
-  // http://localhost:3000/?letter=1
-  // http://localhost:3000/?vip=1
-  const isSpecialLink = Boolean(
-    params.to ||
-    params.letter ||
-    params.vip ||
-    params.for ||
-    params.secret
-  );
-
+export default function Home() {
   return (
     <main className="min-h-screen relative bg-[#fffdfb]">
       {/* Smooth Inertia Scrolling */}
       <SmoothScroll />
 
       {/* Special Motion Graphic Letter Experience */}
-      <MotionLetterExperience initialOpen={isSpecialLink} />
+      <MotionLetterExperience />
 
       {/* Navigation Header */}
       <Navbar />

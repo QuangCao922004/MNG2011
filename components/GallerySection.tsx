@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Camera, Heart, Eye, Sparkles, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { triggerHeartBurst } from "@/lib/confetti";
+import { assetPath } from "@/lib/assets";
 
 interface PhotoItem {
   id: number;
@@ -188,7 +189,7 @@ export default function GallerySection() {
               {/* Image Container */}
               <div className={`relative w-full ${photo.aspect} overflow-hidden bg-stone-200`}>
                 <Image
-                  src={photo.src}
+                  src={assetPath(photo.src)}
                   alt={photo.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -272,7 +273,7 @@ export default function GallerySection() {
             {/* Image side */}
             <div className="relative md:w-3/5 h-80 md:h-[550px] bg-black">
               <Image
-                src={filteredPhotos[lightboxIndex].src}
+                src={assetPath(filteredPhotos[lightboxIndex].src)}
                 alt={filteredPhotos[lightboxIndex].title}
                 fill
                 className="object-contain"

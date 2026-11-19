@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans, Dancing_Script } from "next/font/google";
 import "./globals.css";
+import { assetPath } from "@/lib/assets";
 
 const playfair = Playfair_Display({
   subsets: ["latin", "vietnamese"],
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tri Ân 20/11 - Kính Chúc Cô Ma Ngân Giang",
     description: "Kính chúc cô Ma Ngân Giang thật nhiều sức khỏe, hạnh phúc, thành công và mãi luôn trẻ đẹp!",
-    images: ["/images/giangma1.jpg"],
+    images: [assetPath("/images/giangma1.jpg")],
   },
 };
 

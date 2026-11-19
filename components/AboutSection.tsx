@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { GraduationCap, Heart, Compass, Lightbulb, Sparkles, Star } from "lucide-react";
+import { assetPath } from "@/lib/assets";
 
 export default function AboutSection() {
   const highlights = [
@@ -67,7 +68,7 @@ export default function AboutSection() {
             <div className="relative mx-auto max-w-md rounded-3xl overflow-hidden shadow-2xl border-4 border-rose-100 bg-white group">
               <div className="relative aspect-[3/4] w-full">
                 <Image
-                  src="/images/giangma1.jpg"
+                  src={assetPath("/images/giangma1.jpg")}
                   alt="Cô Ma Ngân Giang trong tà áo dài sư phạm"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Sparkles, TrendingUp, HeartHandshake, History, Award, Check } from "lucide-react";
 import { triggerFireworks } from "@/lib/confetti";
+import { assetPath } from "@/lib/assets";
 
 export default function JourneySection() {
   const [activeTab, setActiveTab] = useState<"then" | "now" | "both">("both");
@@ -43,7 +44,7 @@ export default function JourneySection() {
             <div className="relative w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white group">
               <div className="relative aspect-square w-full">
                 <Image
-                  src="/images/giangma6.jpg"
+                  src={assetPath("/images/giangma6.jpg")}
                   alt="Hành trình thanh xuân của Cô Ma Ngân Giang"
                   fill
                   className="object-cover group-hover:scale-102 transition-transform duration-500"

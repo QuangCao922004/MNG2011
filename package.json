@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
+    "build:gh-pages": "GITHUB_PAGES=true next build",
+    "deploy": "bash scripts/deploy-gh-pages.sh",
     "start": "next start -p 3000",
     "lint": "next lint",
     "init": "node run.mjs init",

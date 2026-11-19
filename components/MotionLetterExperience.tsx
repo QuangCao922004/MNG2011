@@ -27,6 +27,18 @@ export default function MotionLetterExperience({
   // Honour prefers-reduced-motion: the seal still breaks, but nothing is flung.
   const reduceMotion = useReducedMotion();
 
+  // Support static export (e.g. GitHub Pages) by checking URL query params on the client.
+  useEffect(() => {
+    if (initialOpen) return;
+    const params = new URLSearchParams(window.location.search);
+    const hasSpecialParam = ["to", "letter", "vip", "for", "secret"].some((key) =>
+      Boolean(params.get(key))
+    );
+    if (hasSpecialParam) {
+      setIsVisible(true);
+    }
+  }, [initialOpen]);
+
   // Let the in-page letter section reopen the sealed envelope instead of
   // printing a second copy of the letter text.
   useEffect(() => {
