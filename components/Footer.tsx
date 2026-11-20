@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Heart, Flower2, Sparkles, ArrowUp } from "lucide-react";
 import { triggerFireworks } from "@/lib/confetti";
 
@@ -58,12 +59,12 @@ export default function Footer() {
               <li><a href="#gallery" className="hover:text-rose-400 transition-colors">Bộ Sưu Tập Kỷ Niệm</a></li>
               <li><a href="#letter" className="hover:text-rose-400 transition-colors">Tâm Thư 20/11</a></li>
               <li>
-                <a
+                <Link
                   href="/team"
                   className="hover:text-rose-400 transition-colors"
                 >
                   Nhóm Sinh Viên
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
