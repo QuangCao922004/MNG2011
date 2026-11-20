@@ -128,30 +128,31 @@ export default function HeroSection() {
 
               {/* Main Photo Card */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white group">
-                <div className="relative aspect-[3/4] w-full overflow-hidden">
+                {/* Square, because the commemorative frame is 1:1. The previous
+                    asset was a 1284x2778 export with black bars top and bottom, so a
+                    3/4 box showed 744px of black and cut 316px off the frame. */}
+                <div className="relative aspect-square w-full overflow-hidden">
                   <Image
-                    src={assetPath("/images/giangma1.jpg")}
+                    src={assetPath("/images/co-giang-50-nam.jpg")}
                     alt="Cô Ma Ngân Giang - ĐH Sư Phạm TP.HCM"
                     fill
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                     priority
                   />
-                  
-                  {/* Subtle Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-stone-900/70 via-transparent to-transparent opacity-80" />
+                </div>
 
-                  {/* Overlay text at bottom */}
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                    <div className="inline-block px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-xs font-medium mb-1.5">
-                      ĐH Sư Phạm TP.HCM • HCMUE
-                    </div>
-                    <h3 className="font-playfair text-xl font-bold leading-tight">
-                      Cô Ma Ngân Giang
-                    </h3>
-                    <p className="text-xs text-stone-200 font-light mt-0.5">
-                      &quot;Chất Lượng – Sáng Tạo – Nhân Văn&quot;
-                    </p>
+                {/* Caption sits below the artwork: the frame already prints its own
+                    text along the top and bottom, so nothing is laid over it. */}
+                <div className="p-5 bg-gradient-to-r from-teal-900 to-blue-900 text-white">
+                  <div className="inline-block px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-medium mb-1.5">
+                    ĐH Sư Phạm TP.HCM • HCMUE
                   </div>
+                  <h3 className="font-playfair text-xl font-bold leading-tight">
+                    Cô Ma Ngân Giang
+                  </h3>
+                  {/* No quote line here: the artwork already prints
+                      "CHẤT LƯỢNG - SÁNG TẠO - NHÂN VĂN" along its own arc, and the
+                      repeated line collided with the floating badge. */}
                 </div>
               </div>
 
@@ -166,8 +167,9 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              {/* Floating Badge 2: Timeless Charm */}
-              <div className="absolute -bottom-5 -left-5 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-rose-100 flex items-center gap-3 animate-float-slow [animation-delay:2s]">
+              {/* Floating Badge 2: Timeless Charm — bottom-RIGHT so it clears the
+                  left-aligned caption text underneath the artwork. */}
+              <div className="absolute -bottom-5 -right-5 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-rose-100 flex items-center gap-3 animate-float-slow [animation-delay:2s]">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white shadow-md">
                   <Award className="w-5 h-5" />
                 </div>
