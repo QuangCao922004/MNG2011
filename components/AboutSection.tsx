@@ -66,9 +66,9 @@ export default function AboutSection() {
           {/* Left: Featured Image composition */}
           <div className="lg:col-span-5 space-y-4">
             <div className="relative mx-auto max-w-md rounded-3xl overflow-hidden shadow-2xl border-4 border-rose-100 bg-white group">
-              <div className="relative aspect-[3/4] w-full">
+              <div className="relative aspect-square w-full">
                 <Image
-                  src={assetPath("/images/giangma1.jpg")}
+                  src={assetPath("/images/co-giang-50-nam.jpg")}
                   alt="Cô Ma Ngân Giang trong tà áo dài sư phạm"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"

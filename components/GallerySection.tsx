@@ -20,13 +20,13 @@ interface PhotoItem {
 const photoData: PhotoItem[] = [
   {
     id: 1,
-    src: "/images/giangma1.jpg",
+    src: "/images/co-giang-50-nam.jpg",
     title: "Tà Áo Dài Sư Phạm Thanh Tao",
     category: "teaching",
     categoryLabel: "Bục Giảng & Tri Thức",
-    tag: "HCMUE • 20/11",
+    tag: "HCMUE • 50 Năm",
     desc: "Hình ảnh cô Ma Ngân Giang trong tà áo dài xanh ngọc truyền thống, dịu dàng và đoan trang dưới mái trường Đại học Sư phạm TP.HCM. Biểu tượng của tri thức, sự tận tụy và lòng nhân ái.",
-    aspect: "aspect-[3/4]",
+    aspect: "aspect-square",
   },
   {
     id: 2,
