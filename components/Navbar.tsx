@@ -23,7 +23,6 @@ export default function Navbar() {
     { name: "Góc Ảnh Rạng Rỡ", href: "#gallery" },
     { name: "Tâm Thư Tri Ân", href: "#letter" },
     { name: "Bánh Kem 20/11", href: "#cake" },
-    { name: "Gửi Lời Chúc", href: "#wishes" },
   ];
 
   return (

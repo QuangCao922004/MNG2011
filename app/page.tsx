@@ -6,7 +6,6 @@ import JourneySection from "@/components/JourneySection";
 import GallerySection from "@/components/GallerySection";
 import LetterSection from "@/components/LetterSection";
 import CakeSection from "@/components/CakeSection";
-import WishesSection from "@/components/WishesSection";
 import Footer from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -41,9 +40,6 @@ export default function Home() {
 
       {/* Interactive Virtual 20/11 Cake */}
       <CakeSection />
-
-      {/* Guestbook & Wishes Wall */}
-      <WishesSection />
 
       {/* Footer */}
       <Footer />

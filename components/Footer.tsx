@@ -11,15 +11,15 @@ export default function Footer() {
 
   return (
     <footer className="bg-stone-900 text-stone-300 pt-16 pb-12 relative overflow-hidden border-t-4 border-rose-500">
-      
+
       {/* Background glowing circles */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-stone-800">
-          
+
           {/* Brand & Dedication */}
           <div className="md:col-span-6 space-y-4">
             <div className="flex items-center gap-3">
@@ -57,15 +57,14 @@ export default function Footer() {
               <li><a href="#journey" className="hover:text-rose-400 transition-colors">Hành Trình Thanh Xuân</a></li>
               <li><a href="#gallery" className="hover:text-rose-400 transition-colors">Bộ Sưu Tập Kỷ Niệm</a></li>
               <li><a href="#letter" className="hover:text-rose-400 transition-colors">Tâm Thư 20/11</a></li>
-              <li><a href="#wishes" className="hover:text-rose-400 transition-colors">Sổ Lưu Bút</a></li>
-              {/* <li>
+              <li>
                 <a
                   href="/team"
                   className="hover:text-rose-400 transition-colors"
                 >
-                  Đội ngũ phát triển
+                  Nhóm Sinh Viên
                 </a>
-              </li> */}
+              </li>
             </ul>
           </div>
 
