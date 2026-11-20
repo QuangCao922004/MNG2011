@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tri Ân 20/11 - Kính Chúc Cô Ma Ngân Giang",
     description: "Kính chúc cô Ma Ngân Giang thật nhiều sức khỏe, hạnh phúc, thành công và mãi luôn trẻ đẹp!",
-    images: ["/images/giangma1.jpg"],
+    images: ["/images/co-giang-50-nam.jpg"],
   },
 };
 
